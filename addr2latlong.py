@@ -49,7 +49,7 @@ def save_terrain(latlong):
     ret = geocoder.osm(address, timeout=5.0)
     print(f'{no},{prefecture},{city},{town},{prefecture_kana},{city_kana},{town_kana},{ret.latlng}')
     if ret:
-        zoom = 18
+        zoom = 14
         x, y = latlon2tile(ret.latlng[1], ret.latlng[0], zoom)
         nabewari = (zoom, x, y) # タイル座標 (z, x, y)
         nabewari_tile = fetch_tile(*nabewari)
