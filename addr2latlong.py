@@ -4,26 +4,23 @@ import pandas as pd
 import os
 import geocoder
 
+CSV_FILENAME = 'zenkoku.csv'
 
 parser = argparse.ArgumentParser(description='住所CSVファイルから緯度/経度情報を取得するプログラム')
-parser.add_argument('infile', help='入力住所CSVファイル')
 
 def main(args):
-
-    infile = args.infile
-    df_data = read_infile(infile)
-    print('df_data',df_data)
+    df_data = read_infile(CSV_FILENAME)
+    #print('df_data',df_data)
     get_latlong(df_data)
-    #print(f'Writing {outfile} ...')
-    #df_data_unique.to_csv(outfile)
     print('Done')
-    
+
 def read_infile(filename):
     usecols = ['都道府県','都道府県カナ','市区町村','市区町村カナ','町域','町域カナ']
-    return pd.read_csv(filename, usecols=usecols)
-
+    df_data = pd.read_csv(filename, usecols=usecols, encoding="cp932").dropna(how='any')
+    df_data_unique = df_data[['都道府県','都道府県カナ','市区町村','市区町村カナ','町域','町域カナ']].drop_duplicates()
+    return df_data_unique
+    
 def get_latlong(df):
-    # preparation
     map_colmun_and_index = {}
     for index, colmun in enumerate(df.columns, 0):
         map_colmun_and_index[colmun] = index
@@ -39,7 +36,6 @@ def get_latlong(df):
 
         ret = geocoder.osm(prefecture + city + town, timeout=5.0)
         print(f'{prefecture},{city},{town},{prefecture_kana},{city_kana},{town_kana},{ret.latlng}')
-
 
 
 if __name__ == "__main__":
