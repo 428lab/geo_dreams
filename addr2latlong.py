@@ -10,6 +10,8 @@ from math import log
 from math import tan
 from math import pi
 
+import numpy as np
+
 CSV_FILENAME = 'zenkoku.csv'
 
 parser = argparse.ArgumentParser(description='住所CSVファイルから緯度/経度情報を取得するプログラム')
@@ -53,8 +55,8 @@ def save_terrain(latlong):
         x, y = latlon2tile(ret.latlng[1], ret.latlng[0], zoom)
         nabewari = (zoom, x, y) # タイル座標 (z, x, y)
         nabewari_tile = fetch_tile(*nabewari)
-        print('nabewari_tile',nabewari_tile)
-        plt.imshow(nabewari_tile)
+        #print('nabewari_tile',nabewari_tile)
+        plt.imshow(np.array(nabewari_tile ,dtype='float64'))
 
         file_path = os.path.join(dataset_dir, str(no).zfill(7))
         plt.savefig(file_path + '.png')
