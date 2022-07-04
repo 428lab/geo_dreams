@@ -53,6 +53,7 @@ def save_terrain(latlong):
         x, y = latlon2tile(ret.latlng[1], ret.latlng[0], zoom)
         nabewari = (zoom, x, y) # タイル座標 (z, x, y)
         nabewari_tile = fetch_tile(*nabewari)
+        print('nabewari_tile',nabewari_tile)
         plt.imshow(nabewari_tile)
 
         file_path = os.path.join(dataset_dir, str(no).zfill(7))
@@ -64,7 +65,7 @@ def save_terrain(latlong):
    
 def fetch_tile(z, x, y):
     url = "https://cyberjapandata.gsi.go.jp/xyz/dem/{z}/{x}/{y}.txt".format(z=z, x=x, y=y)
-    df = pd.read_csv(url, header=None).replace("e", 0)
+    df = pd.read_csv(url, header=None).replace("e", 0.0)
     return df.values
  
 def latlon2tile(lon, lat, z):
