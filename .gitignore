@@ -1,0 +1,6 @@
+.env
+zenkoku.csv
+csv_zenkoku.zip
+dataset/*
+
+!*.gitkeep
