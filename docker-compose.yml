@@ -1,0 +1,8 @@
+version: '3'
+services:
+  python:
+    build:
+      context: ./docker/python
+    volumes:
+      - ./:/var/www/src
+    tty: true
