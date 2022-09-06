@@ -12,14 +12,14 @@ from math import pi
 
 import numpy as np
 
-CSV_FILENAME = 'zenkoku.csv'
+OUT_FILENAME = 'map.csv'
 
 parser = argparse.ArgumentParser(description='住所CSVファイルから緯度/経度情報を取得するプログラム')
 parser.add_argument('--outfile', default='address_latlong.csv')
 parser.add_argument('--dataset_dir', default='dataset')
 
 def main():
-    df_data = read_infile(CSV_FILENAME)
+    df_data = read_infile(OUT_FILENAME)
     latlongs =  get_latlongs(df_data)
 
     #with Pool(2) as p:
@@ -77,7 +77,7 @@ def latlon2tile(lon, lat, z):
 
 def read_infile(filename):
     usecols = ['都道府県','都道府県カナ','市区町村','市区町村カナ','町域','町域カナ']
-    df_data = pd.read_csv(filename, usecols=usecols, encoding="cp932").dropna(how='any')
+    df_data = pd.read_csv(filename, usecols=usecols, encoding="utf-8").dropna(how='any')
     df_data_unique = df_data[['都道府県','都道府県カナ','市区町村','市区町村カナ','町域','町域カナ']].drop_duplicates()
     return df_data_unique
     
