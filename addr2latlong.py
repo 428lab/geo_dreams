@@ -17,9 +17,10 @@ OUT_FILENAME = 'map.csv'
 parser = argparse.ArgumentParser(description='住所CSVファイルから緯度/経度情報を取得するプログラム')
 parser.add_argument('--outfile', default='address_latlong.csv')
 parser.add_argument('--dataset_dir', default='dataset')
+parser.add_argument('--start_pos', default='start_pos')
 
 def main():
-    df_data = read_infile(OUT_FILENAME)
+    df_data = read_infile(OUT_FILENAME, start_pos)
     latlongs =  get_latlongs(df_data)
 
     #with Pool(2) as p:
@@ -75,21 +76,22 @@ def latlon2tile(lon, lat, z):
     y = int(((-log(tan((45 + lat / 2) * pi / 180)) + pi) * 2**z / (2 * pi))) 
     return x, y
 
-def read_infile(filename):
-    usecols = ['都道府県','都道府県カナ','市区町村','市区町村カナ','町域','町域カナ']
+def read_infile(filename, start_pos):
+    usecols = ['#','都道府県','都道府県カナ','市区町村','市区町村カナ','町域','町域カナ']
     df_data = pd.read_csv(filename, usecols=usecols, encoding="utf-8").dropna(how='any')
-    df_data_unique = df_data[['都道府県','都道府県カナ','市区町村','市区町村カナ','町域','町域カナ']].drop_duplicates()
-    return df_data_unique
+    df_data_unique = df_data[['#','都道府県','都道府県カナ','市区町村','市区町村カナ','町域','町域カナ']].drop_duplicates()
+    return df_data_unique[df_data_unique['#'] >= start_pos]
+
     
 def get_latlongs(df):
     latlongs = []
-    cnt = 0
+    #cnt = 0
     map_colmun_and_index = {}
     for index, colmun in enumerate(df.columns, 0):
         map_colmun_and_index[colmun] = index
 
     for row in df.values:
-        no = cnt
+        no = row[map_colmun_and_index['#']]
         prefecture = row[map_colmun_and_index['都道府県']]
         city = row[map_colmun_and_index['市区町村']]
         town = row[map_colmun_and_index['町域']]
@@ -101,7 +103,7 @@ def get_latlongs(df):
         address_kana = prefecture_kana + city_kana + town_kana
 
         latlongs.append([no,prefecture,city,town,prefecture_kana,city_kana,town_kana])
-        cnt += 1
+        #cnt += 1
 
         #ret = geocoder.osm(address, timeout=5.0)
         #print(f'{prefecture},{city},{town},{prefecture_kana},{city_kana},{town_kana},{ret.latlng}')
@@ -116,4 +118,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     outfile = args.outfile
     dataset_dir = args.dataset_dir
+    start_pos = int(args.start_pos)
     main()
