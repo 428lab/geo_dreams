@@ -23,11 +23,11 @@ def main():
     df_data = read_infile(OUT_FILENAME, start_pos)
     latlongs =  get_latlongs(df_data)
 
-    #with Pool(2) as p:
-    #    p.map(save_terrain, latlongs)
+    with Pool(8) as p:
+        p.map(save_terrain, latlongs)
 
-    for latlong in latlongs:
-        save_terrain(latlong)
+    #for latlong in latlongs:
+    #    save_terrain(latlong)
 
     print('Done')
 
@@ -39,6 +39,10 @@ def save_terrain(latlong):
 
 
     no = latlong[0]
+    file_path = os.path.join(dataset_dir, str(no).zfill(7))
+    if os.path.isfile(file_path + '.png') and os.path.isfile(file_path + '.txt'):
+        return
+
     prefecture = latlong[1]
     city = latlong[2]
     town = latlong[3]
@@ -59,7 +63,6 @@ def save_terrain(latlong):
         #print('nabewari_tile',nabewari_tile)
         plt.imshow(np.array(nabewari_tile ,dtype='float64'))
 
-        file_path = os.path.join(dataset_dir, str(no).zfill(7))
         plt.savefig(file_path + '.png')
 
         f = open(file_path + '.txt', 'w', encoding='UTF-8')
