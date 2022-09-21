@@ -11,6 +11,7 @@ from math import tan
 from math import pi
 
 import numpy as np
+import cv2
 
 OUT_FILENAME = 'map.csv'
 
@@ -39,9 +40,6 @@ def save_terrain(latlong):
 
 
     no = latlong[0]
-    file_path = os.path.join(dataset_dir, str(no).zfill(7))
-    if os.path.isfile(file_path + '.png') and os.path.isfile(file_path + '.txt'):
-        return
 
     prefecture = latlong[1]
     city = latlong[2]
@@ -53,17 +51,26 @@ def save_terrain(latlong):
     town_kana = latlong[6]
     address_kana = prefecture_kana + city_kana + town_kana
 
-    ret = geocoder.osm(address, timeout=5.0)
-    print(f'{no},{prefecture},{city},{town},{prefecture_kana},{city_kana},{town_kana},{ret.latlng}')
+    file_path = os.path.join(dataset_dir, str(no).zfill(7))
+    if os.path.isfile(file_path + '.png') and os.path.isfile(file_path + '.txt'):
+        print(f'{no},{prefecture},{city},{town},{prefecture_kana},{city_kana},{town_kana},*')
+        return
+    else:
+        ret = geocoder.osm(address, timeout=5.0)
+        print(f'{no},{prefecture},{city},{town},{prefecture_kana},{city_kana},{town_kana},{ret.latlng}')
+
     if ret:
         zoom = 14
         x, y = latlon2tile(ret.latlng[1], ret.latlng[0], zoom)
         nabewari = (zoom, x, y) # タイル座標 (z, x, y)
         nabewari_tile = fetch_tile(*nabewari)
         #print('nabewari_tile',nabewari_tile)
-        plt.imshow(np.array(nabewari_tile ,dtype='float64'))
+        #plt.imshow(np.array(nabewari_tile ,dtype='float64'))
 
-        plt.savefig(file_path + '.png')
+        #plt.savefig(file_path + '.png')
+        #print(type(nabewari_tile))
+        cv2.imwrite(file_path + '.png', nabewari_tile.astype(np.float64))
+
 
         f = open(file_path + '.txt', 'w', encoding='UTF-8')
         f.write(f'{prefecture},{city},{town},{prefecture_kana},{city_kana},{town_kana},{ret.latlng[0]},{ret.latlng[1]}')
