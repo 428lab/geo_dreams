@@ -19,3 +19,6 @@ The dataset consists of two pairs of files. One is a txt file that stores the ad
 
 
 
+### Plot 3D and contour map
+
+python plot_map.py -png_file dataset/0004792.png

@@ -3,7 +3,8 @@ import argparse
 import pandas as pd
 import os
 import geocoder
-from multiprocessing import Pool
+from multiprocessing.dummy import Pool
+#from multiprocessing import Pool
 
 import matplotlib.pyplot as plt
 from math import log
