@@ -14,6 +14,8 @@ from math import pi
 import numpy as np
 import cv2
 
+import pickle
+
 OUT_FILENAME = 'map.csv'
 
 parser = argparse.ArgumentParser(description='住所CSVファイルから緯度/経度情報を取得するプログラム')
@@ -65,13 +67,10 @@ def save_terrain(latlong):
         x, y = latlon2tile(ret.latlng[1], ret.latlng[0], zoom)
         nabewari = (zoom, x, y) # タイル座標 (z, x, y)
         nabewari_tile = fetch_tile(*nabewari)
-        #print('nabewari_tile',nabewari_tile)
-        #plt.imshow(np.array(nabewari_tile ,dtype='float64'))
 
-        #plt.savefig(file_path + '.png')
-        #print(type(nabewari_tile))
-        cv2.imwrite(file_path + '.png', nabewari_tile.astype(np.float64))
-
+        with open(file_path + '.pkl', 'wb') as f:
+            pickle.dump(np.array(nabewari_tile ,dtype='float64'), f)
+        f.close()
 
         f = open(file_path + '.txt', 'w', encoding='UTF-8')
         f.write(f'{prefecture},{city},{town},{prefecture_kana},{city_kana},{town_kana},{ret.latlng[0]},{ret.latlng[1]}')
@@ -79,6 +78,7 @@ def save_terrain(latlong):
    
 def fetch_tile(z, x, y):
     url = "https://cyberjapandata.gsi.go.jp/xyz/dem/{z}/{x}/{y}.txt".format(z=z, x=x, y=y)
+    print(url)
     df = pd.read_csv(url, header=None).replace("e", 0.0)
     return df.values
  

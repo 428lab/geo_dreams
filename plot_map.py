@@ -30,6 +30,10 @@ matplotlib.rcParams['font.family'] = font_prop.get_name()
 
 import glob
 
+#from pympler.tracker import SummaryTracker
+#tracker = SummaryTracker()
+
+
 def read_csv(file_name):
     df = pd.read_csv(file_name)
     return df
@@ -56,6 +60,12 @@ class PlotMap:
 
         plt.savefig(output_filepath + '_3d.png', dpi=120)
 
+    def close(self):
+        self.fig.clear()
+        plt.close()
+        plt.cla()
+        plt.clf()
+        
 def read_text_file(file_path):
     with open(file_path, 'r') as f:
         return f.read()
@@ -92,8 +102,12 @@ if __name__ == '__main__':
    
             img = cv2.imread(png_file, cv2.IMREAD_ANYDEPTH)
 
-            p = PlotMap().plot_map(title, img)
+            plot = PlotMap()
+            plot.plot_map(title, img)
 
             is_show = False
             if is_show:
                 plt.show()
+
+            plot.close()
+
