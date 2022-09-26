@@ -29,6 +29,7 @@ font_prop = FontProperties(fname=font_path)
 matplotlib.rcParams['font.family'] = font_prop.get_name()
 
 import glob
+import pickle
 
 #from pympler.tracker import SummaryTracker
 #tracker = SummaryTracker()
@@ -96,11 +97,13 @@ if __name__ == '__main__':
 
             output_filepath = os.path.join(output, basefilename)
             filepath = os.path.join(dataset, basefilename)
-            png_file = filepath + '.png'
+            pkl_file = filepath + '.pkl'
             txt_file = filepath + '.txt'
             title = read_text_file(txt_file)
    
-            img = cv2.imread(png_file, cv2.IMREAD_ANYDEPTH)
+            #img = cv2.imread(png_file, cv2.IMREAD_ANYDEPTH)
+            with open(pkl_file, 'rb') as f:
+                img = pickle.load(f) 
 
             plot = PlotMap()
             plot.plot_map(title, img)
