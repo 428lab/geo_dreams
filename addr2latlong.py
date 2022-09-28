@@ -55,7 +55,7 @@ def save_terrain(latlong):
     address_kana = prefecture_kana + city_kana + town_kana
 
     file_path = os.path.join(dataset_dir, str(no).zfill(7))
-    if os.path.isfile(file_path + '.png') and os.path.isfile(file_path + '.txt'):
+    if os.path.isfile(file_path + '.pkl') and os.path.isfile(file_path + '.txt'):
         print(f'{no},{prefecture},{city},{town},{prefecture_kana},{city_kana},{town_kana},*')
         return
     else:
