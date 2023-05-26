@@ -21,7 +21,7 @@ OUT_FILENAME = 'map.csv'
 parser = argparse.ArgumentParser(description='住所CSVファイルから緯度/経度情報を取得するプログラム')
 parser.add_argument('--outfile', default='address_latlong.csv')
 parser.add_argument('--dataset_dir', default='dataset')
-parser.add_argument('--start_pos', default='start_pos')
+parser.add_argument('--start_pos', default=0)
 
 def main():
     df_data = read_infile(OUT_FILENAME, start_pos)

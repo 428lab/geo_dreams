@@ -59,7 +59,7 @@ class PlotMap:
         self.ax0.plot_surface(X, Y, z, cmap=cm.gist_earth, linewidth=0, antialiased=False)
         self.ax1.contourf(X, Y, z, cmap=cm.gist_earth)
 
-        plt.savefig(output_filepath + '_3d.png', dpi=120)
+        plt.savefig(output_filepath, dpi=120)
 
     def close(self):
         self.fig.clear()
@@ -95,7 +95,9 @@ if __name__ == '__main__':
             basefilename = os.path.splitext(os.path.basename(f"{dataset}{path}"))[0]
             #print('basefilename',basefilename)
 
-            output_filepath = os.path.join(output, basefilename)
+            output_filepath = os.path.join(output, basefilename) + '_3d.png'
+            if os.path.isfile(output_filepath):
+                continue
             filepath = os.path.join(dataset, basefilename)
             pkl_file = filepath + '.pkl'
             txt_file = filepath + '.txt'
