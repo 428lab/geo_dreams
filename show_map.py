@@ -73,46 +73,29 @@ def read_text_file(file_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='parameters')
-    parser.add_argument('-dataset', dest='dataset', type=str, help='dataset dir', required=True)
-    parser.add_argument('-output', dest='output', type=str, help='output dir', required=True)
-    #parser.add_argument('-basefilename', dest='basefilename', type=str, help='dataset dir', required=True)
+    parser.add_argument('-dataset', default='/data/geo/dataset', type=str, help='dataset dir')
+    parser.add_argument('-filename', default='0010659', type=str, help='output dir')
     params = parser.parse_args()
 
     dataset = params.dataset
-    #basefilename = params.basefilename
-    output = params.output
+    filename = params.filename
 
-    #print(f"{dataset}/*.txt")
-    #txt_files = glob.glob(f"{dataset}/*.txt")
-    #print('txt_files',txt_files)
 
-    for path in glob.glob(f"{dataset}/*.txt"):
-        print('path',path)
-        # check if current path is a file
-        if os.path.isfile(path):
-            #res.append(path)
+    #basefilename = os.path.splitext(os.path.basename(f"{dataset}{filename}"))[0]
+    #print('basefilename',basefilename)
 
-            basefilename = os.path.splitext(os.path.basename(f"{dataset}{path}"))[0]
-            #print('basefilename',basefilename)
-
-            output_filepath = os.path.join(output, basefilename) + '_3d.png'
-            if os.path.isfile(output_filepath):
-                continue
-            filepath = os.path.join(dataset, basefilename)
-            pkl_file = filepath + '.pkl'
-            txt_file = filepath + '.txt'
-            title = read_text_file(txt_file)
+    filepath = os.path.join(dataset, filename)
+    pkl_file = filepath + '.pkl'
+    txt_file = filepath + '.txt'
+    title = read_text_file(txt_file)
    
-            #img = cv2.imread(png_file, cv2.IMREAD_ANYDEPTH)
-            with open(pkl_file, 'rb') as f:
-                img = pickle.load(f) 
+    with open(pkl_file, 'rb') as f:
+        img = pickle.load(f) 
 
-            plot = PlotMap()
-            plot.plot_map(title, img)
+    plot = PlotMap()
+    plot.plot_map(title, img)
 
-            is_show = False
-            if is_show:
-                plt.show()
+    plt.show()
 
-            plot.close()
+    plot.close()
 

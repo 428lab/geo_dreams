@@ -17,7 +17,7 @@ class Dataset:
     isExist = os.path.exists(self.output)
     if not isExist:
         # Create a new directory because it does not exist
-        os.makedirs(path)
+        os.makedirs(self.output)
 
     filepath_kanji_ngrams_list = os.path.join(output_dir,'kanji_ngrams_list.npy')
     filepath_one_hot_kanji = os.path.join(output_dir,'one_hot_kanji.npy')
@@ -38,9 +38,14 @@ class Dataset:
     else:
         self.one_hot_kanji = np.load(filepath_one_hot_kanji)
         self.terrains = np.load(filepath_terrains)
-    print('one_hot_kanji',self.one_hot_kanji)
-    print('terrains',self.terrains)
+    #print('one_hot_kanji.shape',self.one_hot_kanji.shape)
+    #print('terrains.shape',self.terrains.shape)
 
+  def get_train_labels(self):
+      return self.one_hot_kanji
+
+  def get_train_terrains(self):
+      return self.terrains
 
   def read_text_file(self, file_path):
       with open(file_path, 'r') as f:
@@ -49,11 +54,11 @@ class Dataset:
   def create_annotations(self, dataset, kanji_ngmras_list):
       one_hot_kanji = []
       terrains = []
-      cnt = 0
+      #cnt = 0
       for path in tqdm.tqdm(glob.glob(f"{dataset}/*.txt")):
-          if cnt > 10:
-              break
-          cnt +=1
+          #if cnt > 10:
+          #    break
+          #cnt +=1
           # check if current path is a file
           if os.path.isfile(path):
 
@@ -133,13 +138,13 @@ class Dataset:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='parameters')
     parser.add_argument('-dataset', dest='dataset', type=str, help='dataset dir', required=True)
-    parser.add_argument('-output', dest='output', default='output',type=str, help='output dir')
+    parser.add_argument('-output', dest='output', default='/ssd/geo_dream/models',type=str, help='output dir')
     params = parser.parse_args()
 
     dataset = params.dataset
     output = params.output
 
-    Dataset(dataset, output)
+    dataset = Dataset(dataset, output)
     exit()
 
 
